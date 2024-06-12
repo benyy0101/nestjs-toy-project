@@ -52,4 +52,8 @@ export class Board {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  //가상 컬럼이기 때문에 select되면 안됨
+  @Column({ select: false, nullable: false, insert: false, update: false })
+  boardCount?: number;
 }

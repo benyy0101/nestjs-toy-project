@@ -1,45 +1,40 @@
+import { AuthService } from './auth/auth.service';
 import {
   Controller,
   Get,
-  // HttpException,
-  // HttpStatus,
-  Logger,
-  Param,
-  Query,
+  Request,
+  Post,
+  Response,
+  UseGuards,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Ip } from './decorators/ip.decorator';
 import { ConfigService } from '@nestjs/config';
-
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly configService: ConfigService,
+    private readonly authService: AuthService,
   ) {}
 
-  private readonly logger = new Logger(AppController.name);
+  // private readonly logger = new Logger(AppController.name);
 
-  @Get()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getHello(@Ip() ip: string): string {
-    // console.log(ip);
-    this.logger.log(ip);
-
-    this.configService.get('ENVIRONMENT');
-    return this.appService.getHello();
-    //throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+  @UseGuards(AuthGuard('local'))
+  @Post('login')
+  async login(@Request() req, @Response() res) {
+    const tokens = await this.authService.login(req.user);
+    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
+    return res.json({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    });
   }
 
-  // path parameter로 변수를 받는 법
-  @Get('name/:name')
-  getName(@Param('name') name: string): string {
-    return `${name} hello`;
-  }
-
-  // query string으로 변수를 받는 법
-  @Get('name')
-  getNameByQuery(@Query('name') name: string): string {
-    return `${name} hello by Query`;
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async me(@Request() req) {
+    return req.user;
   }
 }

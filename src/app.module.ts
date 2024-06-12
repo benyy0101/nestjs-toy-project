@@ -1,20 +1,15 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BoardModule } from './board/board.module';
-import { LoggingMiddleware } from './middleware/loggin.middleware';
+import { LoggingMiddleware } from './middleware/logging.middleware';
 import ConfigModule from './config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { join } from 'path';
+import { UserModule } from './routes/user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 dotenv.config({ path: join(__dirname, '../.env.local') });
-
-console.log('Database Host:', process.env.DB_HOST);
-console.log('Database Port:', process.env.DB_PORT);
-console.log('Database Username:', process.env.DB_USERNAME);
-console.log('Database Password:', process.env.DB_PASSWORD);
-console.log('Database Name:', process.env.DB_NAME);
 
 @Module({
   imports: [
@@ -26,10 +21,12 @@ console.log('Database Name:', process.env.DB_NAME);
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [__dirname + '/**/*.entity.{.ts,.js}'],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false,
     }),
-    BoardModule,
+
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -16,9 +16,8 @@ POST http://localhost:3000/board
 content-type: application/json
 
 {
-    "name": "sample",
-    "title": "TAESOO KIM",
-    "content": "Wed, 21 Oct 2015 18:27:50 GMT"
+    "userId": 1,
+    "contents": "Wed, 21 Oct 2015 18:27:50 GMT"
 }
 
 ###
@@ -33,3 +32,41 @@ content-type: application/json
 
 ###
 DELETE http://localhost:3000/board/1
+
+
+###
+GET http://localhost:3000/user
+
+###
+POST http://localhost:3000/user
+content-type: application/json
+
+{
+    "username": "samplesss2",
+    "password": "11111111",
+    "name": "namename2"
+}
+
+###
+POST http://localhost:3000/user/login
+content-type: application/json
+
+{
+    "username": "samplesss2",
+    "password": "11111111"
+}
+
+
+###
+POST http://localhost:3000/login
+content-type: application/json
+
+{
+    "username": "samplesss2",
+    "password": "11111111"
+}
+
+###
+GET http://localhost:3000/me
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbXBsZXNzczIiLCJuYW1lIjoibmFtZW5hbWUyIiwiaWF0IjoxNzE4MjAzNjMxLCJleHAiOjE3MTgyMDcyMzF9.IxP0uOPRvC-Dgrw7hAov3Hp82LBdjCsWPvCNK3a_OWY
