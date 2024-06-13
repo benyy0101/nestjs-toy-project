@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from 'src/routes/user/user.service';
 import { compare } from 'bcrypt';
@@ -16,56 +17,32 @@ export class AuthService {
   async validateUser(username: string, password: string) {
     const user = await this.userService.getUserByUsername(username);
     if (!user) {
-      throw new HttpException('NO VALIDATE USER', HttpStatus.NOT_FOUND);
+      throw new HttpException('WRONG CREDENTIALS', HttpStatus.NOT_FOUND);
     }
-
     const result = await compare(password, user.password);
 
-    if (result) return user;
-    else return null;
+    if (!result) {
+      throw new HttpException('WRONG PASSWORD', HttpStatus.NOT_FOUND);
+    } else {
+      return user;
+    }
   }
 
   async login(user: User) {
-    const payload = {
-      username: user.username,
-      name: user.name,
-    };
-
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
-
-    // Store refresh token in memory
-    this.refreshTokens[user.username] = refreshToken;
-
-    return {
-      accessToken,
-      refreshToken,
-    };
+    // const { username, password } = user;
+    // const payload = await this.validateUser(username, password);
+    const accessToken = this.jwtService.sign({ ...user });
+    const refreshToken = this.jwtService.sign({ ...user }, { expiresIn: '7d' });
+    return { ...user, accessToken, refreshToken };
   }
 
-  async publishRefreshToken(user: User) {
-    const payload = {
-      username: user.username,
-      name: user.name,
-    };
-
-    const newAccessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
-    const newRefreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
-
-    // Update refresh token in memory
-    this.refreshTokens[user.username] = newRefreshToken;
-
-    return {
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
-    };
-  }
-
-  async getUserIfRefreshTokenMatches(refreshToken: string, username: string) {
-    const user = await this.userService.getUserByUsername(username);
-    if (!user || this.refreshTokens[username] !== refreshToken) {
-      throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
-    }
-    return user;
+  async refreshToken(user: any) {
+    const { iat, exp, ...payload } = user;
+    const accessToken = this.jwtService.sign({ ...payload });
+    const refreshToken = this.jwtService.sign(
+      { ...payload },
+      { expiresIn: '7d' },
+    );
+    return { accessToken, refreshToken };
   }
 }

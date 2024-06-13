@@ -9,8 +9,9 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ConfigService } from '@nestjs/config';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { LocalAuthGuard } from './auth/guards/local-auth.guard';
+import { JwtRefreshGuard } from './auth/guards/jwt-refresh.guards';
 @Controller()
 export class AppController {
   constructor(
@@ -21,14 +22,15 @@ export class AppController {
 
   // private readonly logger = new Logger(AppController.name);
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Response() res) {
-    const tokens = await this.authService.login(req.user);
-    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
+    const { accessToken, refreshToken } = await this.authService.login(
+      req.user,
+    );
     return res.json({
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      accessToken,
+      refreshToken,
     });
   }
 
@@ -36,5 +38,11 @@ export class AppController {
   @Get('me')
   async me(@Request() req) {
     return req.user;
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  async refresh(@Request() req) {
+    return this.authService.refreshToken(req.user);
   }
 }

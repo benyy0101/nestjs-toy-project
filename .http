@@ -1,72 +1,31 @@
-
-
-GET http://localhost:3000
-
-### 
-# 게시글 전체 조회
-GET http://localhost:3000/board
-
-###
-
-# 게시글 아이디로 조회
-GET http://localhost:3000/board/1
-
-###
-POST http://localhost:3000/board
-content-type: application/json
-
-{
-    "userId": 1,
-    "contents": "Wed, 21 Oct 2015 18:27:50 GMT"
-}
-
-###
-PUT http://localhost:3000/board/1
-content-type: application/json
-
-{
-    "name": "sample",
-    "title": "TAESOO KIM",
-    "content": "Wed"
-}
-
-###
-DELETE http://localhost:3000/board/1
-
-
-###
-GET http://localhost:3000/user
-
 ###
 POST http://localhost:3000/user
 content-type: application/json
 
 {
-    "username": "samplesss2",
+    "username": "test_name",
     "password": "11111111",
-    "name": "namename2"
+    "name": "taesookim"
 }
-
-###
-POST http://localhost:3000/user/login
-content-type: application/json
-
-{
-    "username": "samplesss2",
-    "password": "11111111"
-}
-
 
 ###
 POST http://localhost:3000/login
 content-type: application/json
 
 {
-    "username": "samplesss2",
+    "username": "test_name",
     "password": "11111111"
 }
 
 ###
 GET http://localhost:3000/me
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbXBsZXNzczIiLCJuYW1lIjoibmFtZW5hbWUyIiwiaWF0IjoxNzE4MjAzNjMxLCJleHAiOjE3MTgyMDcyMzF9.IxP0uOPRvC-Dgrw7hAov3Hp82LBdjCsWPvCNK3a_OWY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InRhZXNvb2tpbSIsInVzZXJuYW1lIjoidGVzdF9uYW1lIiwicGFzc3dvcmQiOiIkMmIkMTEkaDhIQ3IxNWpBTE5ISHhSRVA2RE11dWhBRy5CQzEzcXQ1R05LSnk3a0ZWTXVpV0tlNHFNbzIiLCJpYXQiOjE3MTgyNzAzNjksImV4cCI6MTcxODI3Mzk2OX0.8MdcauO7iNV79fRT7M23aPiKW_pWJHgFHw95a1NnXYU
+
+###
+POST http://localhost:3000/refresh
+content-type: application/json
+
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InRhZXNvb2tpbSIsInVzZXJuYW1lIjoidGVzdF9uYW1lIiwicGFzc3dvcmQiOiIkMmIkMTEkaDhIQ3IxNWpBTE5ISHhSRVA2RE11dWhBRy5CQzEzcXQ1R05LSnk3a0ZWTXVpV0tlNHFNbzIiLCJpYXQiOjE3MTgyNzA5MzQsImV4cCI6MTcxODg3NTczNH0.vmGtXDbaDLE3BYTLirCJ573-GEScjLcPHlJ5oWUC3sQ"
+}

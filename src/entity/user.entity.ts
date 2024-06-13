@@ -25,7 +25,7 @@ export class User {
     description: '비밀번호',
     example: 'admin',
   })
-  @Column()
+  @Column({ length: 300 })
   password: string;
 
   @ApiProperty({
